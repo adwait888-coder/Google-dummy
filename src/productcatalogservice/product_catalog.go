@@ -27,6 +27,7 @@ import (
 )
 
 type productCatalog struct {
+	pb.UnimplementedProductCatalogServiceServer
 	catalog pb.ListProductsResponse
 	pb.UnimplementedProductCatalogServiceServer
 }
@@ -71,6 +72,7 @@ func (p *productCatalog) ListProducts(ctx context.Context, req *pb.ListProductsR
 func (p *productCatalog) GetProduct(ctx context.Context, req *pb.GetProductRequest) (*pb.Product, error) {
 	time.Sleep(extraLatency)
 
+<<<<<<< HEAD
 	var found *pb.Product
 	products := p.parseCatalog()
 	for i := 0; i < len(products); i++ {
@@ -84,6 +86,16 @@ func (p *productCatalog) GetProduct(ctx context.Context, req *pb.GetProductReque
 	productClone := shallowCopyProduct(found)
 	translateProductsInPlace(ctx, getGoogleCloudProjectId(), req.Language, []*pb.Product{productClone})
 	return productClone, nil
+=======
+	catalog := p.parseCatalog()
+	for _, product := range catalog {
+		if req.Id == product.Id {
+			return product, nil
+		}
+	}
+
+	return nil, status.Errorf(codes.NotFound, "no product with ID %s", req.Id)
+>>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
 }
 
 func (p *productCatalog) SearchProducts(ctx context.Context, req *pb.SearchProductsRequest) (*pb.SearchProductsResponse, error) {
@@ -102,7 +114,7 @@ func (p *productCatalog) SearchProducts(ctx context.Context, req *pb.SearchProdu
 
 func (p *productCatalog) parseCatalog() []*pb.Product {
 	if reloadCatalog || len(p.catalog.Products) == 0 {
-		err := readCatalogFile(&p.catalog)
+		err := loadCatalog(&p.catalog)
 		if err != nil {
 			return []*pb.Product{}
 		}

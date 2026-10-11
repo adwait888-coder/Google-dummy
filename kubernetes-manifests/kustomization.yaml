@@ -25,7 +25,6 @@ resources:
  - paymentservice.yaml
  - productcatalogservice.yaml
  - recommendationservice.yaml
- - redis.yaml
  - shippingservice.yaml
 components:
 - ../kustomize/components/cymbal-branding
@@ -33,7 +32,12 @@ components:
 # - ../kustomize/components/https-frontend-domain
 # - ../kustomize/components/memorystore
 # - ../kustomize/components/network-policies
+<<<<<<< HEAD
 - ../kustomize/components/service-accounts
+=======
+# - ../kustomize/components/alloydb
+# - ../kustomize/components/shopping-assistant
+>>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
 # - ../kustomize/components/spanner
 # - ../kustomize/components/container-images-tag
 # - ../kustomize/components/container-images-tag-suffix

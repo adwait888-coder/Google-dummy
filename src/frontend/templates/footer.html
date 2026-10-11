@@ -19,8 +19,13 @@
 <footer class="py-5">
     <div class="footer-top">
         <div class="container footer-social">
+<<<<<<< HEAD
             <p class="footer-text">{{ index .i18n "FooterDemoOnlyNotGoogleProduct" }}</p>
             <p class="footer-text">© 2020 Google Inc (<a href="https://github.com/GoogleCloudPlatform/microservices-demo">{{ index .i18n "FooterSourceCode" }}</a>)</p>
+=======
+            <p class="footer-text">This website is hosted for demo purposes only. It is not an actual shop. This is not a Google product.</p>
+            <p class="footer-text">© 2020-{{ .currentYear }} Google LLC (<a href="https://github.com/GoogleCloudPlatform/microservices-demo">Source Code</a>)</p>
+>>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
             <p class="footer-text">
                 <small>
                     {{ if $.session_id }}session-id: {{ $.session_id }} — {{end}}

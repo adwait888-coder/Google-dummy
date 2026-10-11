@@ -27,9 +27,15 @@
 
         {{ if eq (len $.items) 0 }}
         <section class="empty-cart-section">
+<<<<<<< HEAD
             <h3>{{ index .i18n "CartIsEmpty" }}</h3>
             <p>{{ index .i18n "CartItemAppearHere" }}</p>
             <a class="cymbal-button-primary" href="/?lang={{ $.languageIsoCode }}" role="button">{{ index .i18n "CartContinueShopping" }}</a>
+=======
+            <h3>Your shopping cart is empty!</h3>
+            <p>Items you add to your shopping cart will appear here.</p>
+            <a class="cymbal-button-primary" href="{{ $.baseUrl }}/" role="button">Continue Shopping</a>
+>>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
         </section>
         {{ else }}
         <section class="container">
@@ -42,12 +48,21 @@
                             <h3>{{ index .i18n "Cart" }} ({{ $.cart_size }})</h3>
                         </div>
                         <div class="col-8 pr-md-0 text-right">
+<<<<<<< HEAD
                             <form method="POST" action="/cart/empty?lang={{ $.languageIsoCode }}">
+=======
+                            <form method="POST" action="{{ $.baseUrl }}/cart/empty">
+>>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
                                 <button class="cymbal-button-secondary cart-summary-empty-cart-button" type="submit">
                                   {{ index .i18n "CartEmptyCart" }}
                                 </button>
+<<<<<<< HEAD
                                 <a class="cymbal-button-primary" href="/?lang={{ $.languageIsoCode }}" role="button">
                                   {{ index .i18n "CartContinueShopping" }}
+=======
+                                <a class="cymbal-button-primary" href="{{ $.baseUrl }}/" role="button">
+                                    Continue Shopping
+>>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
                                 </a>
                             </form>
                         </div>
@@ -56,8 +71,13 @@
                     {{ range $.items }}
                     <div class="row cart-summary-item-row">
                         <div class="col-md-4 pl-md-0">
+<<<<<<< HEAD
                             <a href="/product/{{.Item.Id}}?lang={{ $.languageIsoCode }}">
                                 <img class="img-fluid" alt="" src="{{.Item.Picture}}" />
+=======
+                            <a href="{{ $.baseUrl }}/product/{{.Item.Id}}">
+                                <img class="img-fluid" alt="" src="{{ $.baseUrl }}{{.Item.Picture}}" />
+>>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
                             </a>
                         </div>
                         <div class="col-md-8 pr-md-0">
@@ -99,7 +119,11 @@
 
                 <div class="col-lg-5 offset-lg-1 col-xl-4">
 
+<<<<<<< HEAD
                     <form class="cart-checkout-form" action="/cart/checkout?lang={{ $.languageIsoCode }}" method="POST">
+=======
+                    <form class="cart-checkout-form" action="{{ $.baseUrl }}/cart/checkout" method="POST">
+>>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
 
                         <div class="row">
                             <div class="col">
@@ -164,9 +188,9 @@
                                 <label for="credit_card_number">{{ index .i18n "CartCreditCartNumber" }}</label>
                                 <input type="text" id="credit_card_number"
                                     name="credit_card_number"
-                                    placeholder="0000-0000-0000-0000"
-                                    value="4432-8015-6152-0454"
-                                    required pattern="\d{4}-\d{4}-\d{4}-\d{4}">
+                                    placeholder="0000000000000000"
+                                    value="4432801561520454"
+                                    required pattern="\d{16}">
                             </div>
                         </div>
 
@@ -187,7 +211,7 @@
                                     <option value="11">{{ index .i18n "CartMonth11" }}</option>
                                     <option value="12">{{ index .i18n "CartMonth12" }}</option>
                                 </select>
-                                <img src="/static/icons/Hipster_DownArrow.svg" alt="" class="cymbal-dropdown-chevron">
+                                <img src="{{ $.baseUrl }}/static/icons/Hipster_DownArrow.svg" alt="" class="cymbal-dropdown-chevron">
                             </div>
                             <div class="col-md-4 cymbal-form-field">
                                     <label for="credit_card_expiration_year">{{ index .i18n "CartYear" }}</label>
@@ -198,7 +222,7 @@
                                         {{- end}}
                                     >{{$y}}</option>{{end}}
                                     </select>
-                                    <img src="/static/icons/Hipster_DownArrow.svg" alt="" class="cymbal-dropdown-chevron">
+                                    <img src="{{ $.baseUrl }}/static/icons/Hipster_DownArrow.svg" alt="" class="cymbal-dropdown-chevron">
                                 </div>
                             <div class="col-md-3 cymbal-form-field">
                                 <label for="credit_card_cvv">{{ index .i18n "CardCvv" }}</label>
@@ -226,8 +250,12 @@
     </main>
 
     {{ if $.recommendations }}
+<<<<<<< HEAD
       {{ template "recommendations" . }}
+=======
+        {{ template "recommendations" $ }}
+>>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
     {{ end }}
 
     {{ template "footer" . }}
-    {{ end }}
+{{ end }}

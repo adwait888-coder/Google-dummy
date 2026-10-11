@@ -26,7 +26,7 @@
   <div class="h-product container">
     <div class="row">
       <div class="col-md-6">
-        <img class="product-image" alt="" src="{{$.product.Item.Picture}}" />
+        <img class="product-image" alt="" src="{{ $.baseUrl }}{{$.product.Item.Picture}}" />
       </div>
       <div class="product-info col-md-5">
         <div class="product-wrapper">
@@ -35,7 +35,29 @@
           <p class="product-price">{{ renderMoney $.product.Price }}</p>
           <p>{{ $.product.Item.Description }}</p>
 
+<<<<<<< HEAD
           <form method="POST" action="/cart?lang={{ $.languageIsoCode }}">
+=======
+          {{ if $.packagingInfo }}
+          <div class="product-packaging">
+            <h3>Packaging</h3>
+            <span>
+              Weight: {{ if $.packagingInfo.Weight }}{{ $.packagingInfo.Weight }}lb{{ else }}n/a{{ end }}
+            </span>
+            <span>
+              Width: {{ if $.packagingInfo.Width }}{{ $.packagingInfo.Width }}cm{{ else }}n/a{{ end }}
+            </span>
+            <span>
+              Height: {{ if $.packagingInfo.Height }}{{ $.packagingInfo.Height }}cm{{ else }}n/a{{ end }}
+            </span>
+            <span>
+              Depth: {{ if $.packagingInfo.Depth }}{{ $.packagingInfo.Depth }}cm{{ else }}n/a{{ end }}
+            </span>
+          </div>
+          {{ end }}
+
+          <form method="POST" action="{{ $.baseUrl }}/cart">
+>>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
             <input type="hidden" name="product_id" value="{{$.product.Item.Id}}" />
             <div class="product-quantity-dropdown">
               <select name="quantity" id="quantity">
@@ -46,7 +68,7 @@
                 <option>5</option>
                 <option>10</option>
               </select>
-              <img src="/static/icons/Hipster_DownArrow.svg" alt="">
+              <img src="{{ $.baseUrl }}/static/icons/Hipster_DownArrow.svg" alt="">
             </div>
             <button type="submit" class="cymbal-button-primary">{{ index .i18n "ProductAddToCart" }}</button>
           </form>
@@ -56,6 +78,7 @@
   </div>
   <div>
     {{ if $.recommendations}}
+<<<<<<< HEAD
       {{ template "recommendations" . }}
     {{ end }}
   </div>
@@ -63,7 +86,15 @@
     {{ if $.ad }}
       {{ template "text_ad" . }}
     {{ end }}
+=======
+      {{ template "recommendations" $ }}
+    {{ end }}
   </div>
+  <div class="ad">
+   {{ if $.ad }}{{ template "text_ad" $ }}{{ end }}
+>>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
+  </div>
+
 </main>
 {{ template "footer" . }}
 {{ end }}

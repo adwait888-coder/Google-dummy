@@ -63,15 +63,24 @@
             </div>
             <div class="row">
                 <div class="col-12 text-center">
+<<<<<<< HEAD
                     <a class="cymbal-button-primary" href="/?lang={{ $.languageIsoCode }}" role="button">
                       {{ index .i18n "OrderContinueShopping" }}
+=======
+                    <a class="cymbal-button-primary" href="{{ $.baseUrl }}/" role="button">
+                        Continue Shopping
+>>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
                     </a>
                 </div>
             </div>
         </section>
 
         {{ if $.recommendations }}
+<<<<<<< HEAD
             {{ template "recommendations" . }}
+=======
+            {{ template "recommendations" $ }}
+>>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
         {{ end }}
 
     </main>
