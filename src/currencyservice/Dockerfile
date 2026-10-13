@@ -14,17 +14,28 @@
 
 FROM node:20-alpine AS builder
 
-# Some packages (e.g. @google-cloud/profiler) require additional
-# deps for post-install scripts
+# 1. आवश्यक बिल्ड टूल्स आणि डाऊनलोडसाठी curl, tar इन्स्टॉल करा
 RUN apk add --update --no-cache \
     python3 \
     make \
-    g++
+    g++ \
+    curl \
+    tar
 
 WORKDIR /usr/src/app
 
+# 2. सध्याच्या Node version नुसार हेडर्स फाईल मॅन्युअली डाउनलोड करून एक्सट्रॅक्ट करा
+# यामुळे node-gyp ला इंटरनेटची गरज पडणार नाही
+RUN NODE_VERSION=$(node -v | tr -d 'v') && \
+    mkdir -p /tmp/node-headers && \
+    curl -sL https://nodejs.org/download/release/v$NODE_VERSION/node-v$NODE_VERSION-headers.tar.gz | tar -xz -C /tmp/node-headers --strip-components=1
+
+# 3. node-gyp साठी लोकल हेडर्सचा पाथ सेट करा
+ENV npm_config_nodedir=/tmp/node-headers
+
 COPY package*.json ./
 
+# 4. आता npm install केल्यावर pprof आरामात कंपाइल होईल
 RUN npm install --only=production
 
 FROM node:20-alpine
