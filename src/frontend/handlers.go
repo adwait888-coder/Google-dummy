@@ -28,7 +28,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/GoogleCloudPlatform/microservices-demo/src/frontend/i18n"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -65,7 +64,7 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve currencies"), http.StatusInternalServerError)
 		return
 	}
-	products, err := fe.getProducts(r.Context(), getLanguageIsoCodeOfRequest(r))
+	products, err := fe.getProducts(r.Context())
 	if err != nil {
 		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve products"), http.StatusInternalServerError)
 		return
@@ -108,11 +107,7 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	plat = platformDetails{}
 	plat.setPlatformDetails(strings.ToLower(env))
 
-<<<<<<< HEAD
-	if err := templates.ExecuteTemplate(w, "home", templateDataWithDefaults(r, map[string]interface{}{
-=======
 	if err := templates.ExecuteTemplate(w, "home", injectCommonTemplateData(r, map[string]interface{}{
->>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
 		"show_currency": true,
 		"currencies":    currencies,
 		"products":      ps,
@@ -156,7 +151,7 @@ func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request)
 	log.WithField("id", id).WithField("currency", currentCurrency(r)).
 		Debug("serving product page")
 
-	p, err := fe.getProduct(r.Context(), id, getLanguageIsoCodeOfRequest(r))
+	p, err := fe.getProduct(r.Context(), id)
 	if err != nil {
 		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve product"), http.StatusInternalServerError)
 		return
@@ -180,7 +175,7 @@ func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request)
 	}
 
 	// ignores the error retrieving recommendations since it is not critical
-	recommendations, err := fe.getRecommendations(r.Context(), sessionID(r), []string{id}, getLanguageIsoCodeOfRequest(r))
+	recommendations, err := fe.getRecommendations(r.Context(), sessionID(r), []string{id})
 	if err != nil {
 		log.WithField("error", err).Warn("failed to get product recommendations")
 	}
@@ -190,9 +185,6 @@ func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request)
 		Price *pb.Money
 	}{p, price}
 
-<<<<<<< HEAD
-	if err := templates.ExecuteTemplate(w, "product", templateDataWithDefaults(r, map[string]interface{}{
-=======
 	// Fetch packaging info (weight/dimensions) of the product
 	// The packaging service is an optional microservice you can run as part of a Google Cloud demo.
 	var packagingInfo *PackagingInfo = nil
@@ -204,17 +196,13 @@ func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request)
 	}
 
 	if err := templates.ExecuteTemplate(w, "product", injectCommonTemplateData(r, map[string]interface{}{
->>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
 		"ad":              fe.chooseAd(r.Context(), p.Categories, log),
 		"show_currency":   true,
 		"currencies":      currencies,
 		"product":         product,
 		"recommendations": recommendations,
 		"cart_size":       cartSize(cart),
-<<<<<<< HEAD
-=======
 		"packagingInfo":   packagingInfo,
->>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
 	})); err != nil {
 		log.Println(err)
 	}
@@ -234,11 +222,7 @@ func (fe *frontendServer) addToCartHandler(w http.ResponseWriter, r *http.Reques
 	}
 	log.WithField("product", payload.ProductID).WithField("quantity", payload.Quantity).Debug("adding to cart")
 
-<<<<<<< HEAD
-	p, err := fe.getProduct(r.Context(), productID, getLanguageIsoCodeOfRequest(r))
-=======
 	p, err := fe.getProduct(r.Context(), payload.ProductID)
->>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
 	if err != nil {
 		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve product"), http.StatusInternalServerError)
 		return
@@ -248,11 +232,7 @@ func (fe *frontendServer) addToCartHandler(w http.ResponseWriter, r *http.Reques
 		renderHTTPError(log, r, w, errors.Wrap(err, "failed to add to cart"), http.StatusInternalServerError)
 		return
 	}
-<<<<<<< HEAD
-	w.Header().Set("location", "/cart?lang="+getLanguageIsoCodeOfRequest(r))
-=======
 	w.Header().Set("location", baseUrl + "/cart")
->>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
 	w.WriteHeader(http.StatusFound)
 }
 
@@ -264,11 +244,7 @@ func (fe *frontendServer) emptyCartHandler(w http.ResponseWriter, r *http.Reques
 		renderHTTPError(log, r, w, errors.Wrap(err, "failed to empty cart"), http.StatusInternalServerError)
 		return
 	}
-<<<<<<< HEAD
-	w.Header().Set("location", "/?lang="+getLanguageIsoCodeOfRequest(r))
-=======
 	w.Header().Set("location", baseUrl + "/")
->>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
 	w.WriteHeader(http.StatusFound)
 }
 
@@ -287,7 +263,7 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	// ignores the error retrieving recommendations since it is not critical
-	recommendations, err := fe.getRecommendations(r.Context(), sessionID(r), cartIDs(cart), getLanguageIsoCodeOfRequest(r))
+	recommendations, err := fe.getRecommendations(r.Context(), sessionID(r), cartIDs(cart))
 	if err != nil {
 		log.WithField("error", err).Warn("failed to get product recommendations")
 	}
@@ -306,7 +282,7 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 	items := make([]cartItemView, len(cart))
 	totalPrice := pb.Money{CurrencyCode: currentCurrency(r)}
 	for i, item := range cart {
-		p, err := fe.getProduct(r.Context(), item.GetProductId(), getLanguageIsoCodeOfRequest(r))
+		p, err := fe.getProduct(r.Context(), item.GetProductId())
 		if err != nil {
 			renderHTTPError(log, r, w, errors.Wrapf(err, "could not retrieve product #%s", item.GetProductId()), http.StatusInternalServerError)
 			return
@@ -327,11 +303,7 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 	totalPrice = money.Must(money.Sum(totalPrice, *shippingCost))
 	year := time.Now().Year()
 
-<<<<<<< HEAD
-	if err := templates.ExecuteTemplate(w, "cart", templateDataWithDefaults(r, map[string]interface{}{
-=======
 	if err := templates.ExecuteTemplate(w, "cart", injectCommonTemplateData(r, map[string]interface{}{
->>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
 		"currencies":       currencies,
 		"recommendations":  recommendations,
 		"cart_size":        cartSize(cart),
@@ -403,7 +375,7 @@ func (fe *frontendServer) placeOrderHandler(w http.ResponseWriter, r *http.Reque
 	log.WithField("order", order.GetOrder().GetOrderId()).Info("order placed")
 
 	order.GetOrder().GetItems()
-	recommendations, _ := fe.getRecommendations(r.Context(), sessionID(r), nil, getLanguageIsoCodeOfRequest(r))
+	recommendations, _ := fe.getRecommendations(r.Context(), sessionID(r), nil)
 
 	totalPaid := *order.GetOrder().GetShippingCost()
 	for _, v := range order.GetOrder().GetItems() {
@@ -417,19 +389,13 @@ func (fe *frontendServer) placeOrderHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-<<<<<<< HEAD
-	if err := templates.ExecuteTemplate(w, "order", templateDataWithDefaults(r, map[string]interface{}{
-=======
 	if err := templates.ExecuteTemplate(w, "order", injectCommonTemplateData(r, map[string]interface{}{
->>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
 		"show_currency":   false,
 		"currencies":      currencies,
 		"order":           order.GetOrder(),
 		"total_paid":      &totalPaid,
 		"recommendations": recommendations,
 	})); err != nil {
-<<<<<<< HEAD
-=======
 		log.Println(err)
 	}
 }
@@ -445,7 +411,6 @@ func (fe *frontendServer) assistantHandler(w http.ResponseWriter, r *http.Reques
 		"show_currency": false,
 		"currencies":    currencies,
 	})); err != nil {
->>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
 		log.Println(err)
 	}
 }
@@ -458,11 +423,7 @@ func (fe *frontendServer) logoutHandler(w http.ResponseWriter, r *http.Request) 
 		c.MaxAge = -1
 		http.SetCookie(w, c)
 	}
-<<<<<<< HEAD
-	w.Header().Set("Location", "/?lang="+getLanguageIsoCodeOfRequest(r))
-=======
 	w.Header().Set("Location", baseUrl + "/")
->>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
 	w.WriteHeader(http.StatusFound)
 }
 
@@ -555,11 +516,7 @@ func (fe *frontendServer) setCurrencyHandler(w http.ResponseWriter, r *http.Requ
 	}
 	referer := r.Header.Get("referer")
 	if referer == "" {
-<<<<<<< HEAD
-		referer = "/?lang=" + getLanguageIsoCodeOfRequest(r)
-=======
 		referer = baseUrl + "/"
->>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
 	}
 	w.Header().Set("Location", referer)
 	w.WriteHeader(http.StatusFound)
@@ -582,41 +539,13 @@ func renderHTTPError(log logrus.FieldLogger, r *http.Request, w http.ResponseWri
 
 	w.WriteHeader(code)
 
-<<<<<<< HEAD
-	if templateErr := templates.ExecuteTemplate(w, "error", templateDataWithDefaults(r, map[string]interface{}{
-=======
 	if templateErr := templates.ExecuteTemplate(w, "error", injectCommonTemplateData(r, map[string]interface{}{
->>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
 		"error":       errMsg,
 		"status_code": code,
 		"status":      http.StatusText(code),
 	})); templateErr != nil {
 		log.Println(templateErr)
-<<<<<<< HEAD
 	}
-}
-
-func templateDataWithDefaults(r *http.Request, payload map[string]interface{}) map[string]interface{} {
-	data := map[string]interface{}{
-		"session_id":        sessionID(r),
-		"request_id":        r.Context().Value(ctxKeyRequestID{}),
-		"user_currency":     currentCurrency(r),
-		"platform_css":      plat.css,
-		"platform_name":     plat.provider,
-		"is_cymbal_brand":   isCymbalBrand,
-		"deploymentDetails": deploymentDetailsMap,
-		"frontendMessage":   frontendMessage,
-		"languageIsoCode":   getLanguageIsoCodeOfRequest(r),
-		"i18n":              i18n.GetWords(getLanguageIsoCodeOfRequest(r)),
-=======
->>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
-	}
-
-	for k, v := range payload {
-		data[k] = v
-	}
-
-	return data
 }
 
 func injectCommonTemplateData(r *http.Request, payload map[string]interface{}) map[string]interface{} {
@@ -694,15 +623,6 @@ func renderCurrencyLogo(currencyCode string) string {
 		logo = val
 	}
 	return logo
-}
-
-// Users can change the language of the frontend by using a GET URL parameter like "?lang=en".
-func getLanguageIsoCodeOfRequest(r *http.Request) string {
-	if r.URL.Query().Has("lang") {
-		return r.URL.Query().Get("lang")
-	}
-
-	return "en"
 }
 
 func stringinSlice(slice []string, val string) bool {
