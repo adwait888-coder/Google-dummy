@@ -40,18 +40,13 @@
         <div class="row hot-products-row px-xl-6">
 
           <div class="col-12">
-            <h3>{{ index .i18n "HomeHotProducts" }}</h3>
+            <h3>Hot Products</h3>
           </div>
 
           {{ range $.products }}
           <div class="col-md-4 hot-product-card">
-<<<<<<< HEAD
-            <a href="/product/{{.Item.Id}}?lang={{ $.languageIsoCode }}">
-              <img alt="" src="{{.Item.Picture}}">
-=======
             <a href="{{ $.baseUrl }}/product/{{.Item.Id}}">
               <img loading="lazy" src="{{ $.baseUrl }}{{.Item.Picture}}">
->>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
               <div class="hot-product-card-img-overlay"></div>
             </a>
             <div>

@@ -42,19 +42,15 @@ func (fe *frontendServer) getCurrencies(ctx context.Context) ([]string, error) {
 	return out, nil
 }
 
-func (fe *frontendServer) getProducts(ctx context.Context, languageIsoCode string) ([]*pb.Product, error) {
-	log.Infof("Getting products from productcatalogservice in language %v", languageIsoCode)
+func (fe *frontendServer) getProducts(ctx context.Context) ([]*pb.Product, error) {
 	resp, err := pb.NewProductCatalogServiceClient(fe.productCatalogSvcConn).
-		ListProducts(ctx, &pb.ListProductsRequest{Language: languageIsoCode})
-	log.Infof("Got products from productcatalogservice including %v", resp.Products[0].Name)
+		ListProducts(ctx, &pb.Empty{})
 	return resp.GetProducts(), err
 }
 
-func (fe *frontendServer) getProduct(ctx context.Context, id string, languageIsoCode string) (*pb.Product, error) {
-	log.Infof("Getting product from productcatalogservice in language %v", languageIsoCode)
+func (fe *frontendServer) getProduct(ctx context.Context, id string) (*pb.Product, error) {
 	resp, err := pb.NewProductCatalogServiceClient(fe.productCatalogSvcConn).
-		GetProduct(ctx, &pb.GetProductRequest{Id: id, Language: languageIsoCode})
-	log.Infof("Got product from productcatalogservice %v", resp.Name)
+		GetProduct(ctx, &pb.GetProductRequest{Id: id})
 	return resp, err
 }
 
@@ -100,7 +96,7 @@ func (fe *frontendServer) getShippingQuote(ctx context.Context, items []*pb.Cart
 	return localized, errors.Wrap(err, "failed to convert currency for shipping cost")
 }
 
-func (fe *frontendServer) getRecommendations(ctx context.Context, userID string, productIDs []string, languageIsoCode string) ([]*pb.Product, error) {
+func (fe *frontendServer) getRecommendations(ctx context.Context, userID string, productIDs []string) ([]*pb.Product, error) {
 	resp, err := pb.NewRecommendationServiceClient(fe.recommendationSvcConn).ListRecommendations(ctx,
 		&pb.ListRecommendationsRequest{UserId: userID, ProductIds: productIDs})
 	if err != nil {
@@ -108,7 +104,7 @@ func (fe *frontendServer) getRecommendations(ctx context.Context, userID string,
 	}
 	out := make([]*pb.Product, len(resp.GetProductIds()))
 	for i, v := range resp.GetProductIds() {
-		p, err := fe.getProduct(ctx, v, languageIsoCode)
+		p, err := fe.getProduct(ctx, v)
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to get recommended product info (#%s)", v)
 		}

@@ -35,9 +35,6 @@
           <p class="product-price">{{ renderMoney $.product.Price }}</p>
           <p>{{ $.product.Item.Description }}</p>
 
-<<<<<<< HEAD
-          <form method="POST" action="/cart?lang={{ $.languageIsoCode }}">
-=======
           {{ if $.packagingInfo }}
           <div class="product-packaging">
             <h3>Packaging</h3>
@@ -57,7 +54,6 @@
           {{ end }}
 
           <form method="POST" action="{{ $.baseUrl }}/cart">
->>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
             <input type="hidden" name="product_id" value="{{$.product.Item.Id}}" />
             <div class="product-quantity-dropdown">
               <select name="quantity" id="quantity">
@@ -70,7 +66,7 @@
               </select>
               <img src="{{ $.baseUrl }}/static/icons/Hipster_DownArrow.svg" alt="">
             </div>
-            <button type="submit" class="cymbal-button-primary">{{ index .i18n "ProductAddToCart" }}</button>
+            <button type="submit" class="cymbal-button-primary">Add To Cart</button>
           </form>
         </div>
       </div>
@@ -78,21 +74,11 @@
   </div>
   <div>
     {{ if $.recommendations}}
-<<<<<<< HEAD
-      {{ template "recommendations" . }}
-    {{ end }}
-  </div>
-  <div class="ad">
-    {{ if $.ad }}
-      {{ template "text_ad" . }}
-    {{ end }}
-=======
       {{ template "recommendations" $ }}
     {{ end }}
   </div>
   <div class="ad">
    {{ if $.ad }}{{ template "text_ad" $ }}{{ end }}
->>>>>>> 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
   </div>
 
 </main>
